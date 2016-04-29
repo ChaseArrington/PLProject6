@@ -21,7 +21,7 @@ def let(l):
     if isinstance(l[0], basestring):
         if l[0].isalpha():
             vars[l[0]] = l[1]
-    print(vars)
+    #print(vars)
     
 name['let'] = let
 
@@ -75,9 +75,20 @@ name['+'] = add
 
 def minus(l):
     '''Unary minus'''
-    return -l[0]
+    return l[0] - l[1]
 
 name['-'] = minus
+
+def multiply (l):
+    return l[0] * l[1]
+
+name ['*'] = multiply
+
+def divide (l):
+    if l[1] != 0:
+        return l[0] / l[1]
+
+name['/'] = divide
 
 def _print(l):
     print lisp_str(l[0])
@@ -87,8 +98,10 @@ name['print'] = _print
 #  Evaluation functions
 
 def lisp_eval(simb, items):
-    if simb in name:
+    if simb in name and name[simb] != let:
         return call(name[simb], eval_lists(items))
+    elif name[simb] == let:
+        return name[simb](items)
     else:
        return [simb] + items
 
@@ -200,7 +213,7 @@ def p_call(p):
     'call : LPAREN LET LPAREN items RPAREN call RPAREN'
     global apl
     global vars
-    if DEBUG: print "Calling", p[2], "with", p[4]
+    #if DEBUG: print "Calling", p[2], "with", p[4]
     p[0] = lisp_eval(p[2], p[4])
     p[0] = lisp_eval(apl[0], apl[1])
     vars = {}
@@ -216,12 +229,12 @@ def p_call(p):
 def p_callOG(p):
     'call : LPAREN SIMB items RPAREN'
     global apl
-    if DEBUG: print "Calling", p[2], "with", p[3]
+    #if DEBUG: print "Calling", p[2], "with", p[3]
     if (p[3][0] in vars):
         p[0] = lisp_eval(p[2], p[3])
     elif (isinstance(p[3][0], basestring) or isinstance(p[3][1], basestring)):
         apl = [p[2], p[3]]
-        print apl
+        #print apl
     else:
         p[0] = lisp_eval(p[2], p[3])
 
@@ -231,7 +244,7 @@ def p_callOG(p):
 #    p[0] = lisp_eval(p[2], p[4])
 def p_callLetTwo(p):
     'call : LPAREN LET LPAREN items RPAREN RPAREN'
-    if DEBUG: print "Calling", p[2], "with", p[4]
+    #if DEBUG: print "Calling", p[2], "with", p[4]
     p[0] = lisp_eval(p[2], p[4])
 
 
