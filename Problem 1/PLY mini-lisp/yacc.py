@@ -231,6 +231,7 @@ def p_callOG(p):
     global apl
     #if DEBUG: print "Calling", p[2], "with", p[3]
     if (p[3][0] in vars):
+        apl = [p[2], p[3]]
         p[0] = lisp_eval(p[2], p[3])
     elif (isinstance(p[3][0], basestring) or isinstance(p[3][1], basestring)):
         apl = [p[2], p[3]]
