@@ -8,8 +8,9 @@ DEBUG = True
 # Namespace & built-in functions
 
 name = {}
+global vars
 vars = {}
-
+global apl
 def cons(l):
     return [l[0]] + l[1]
 
@@ -188,26 +189,50 @@ def p_item_empty(p):
     'item : empty'
     p[0] = p[1]
 
-def p_callMultiple(p):
-    'calls : LPAREN LET LPAREN items RPAREN LPAREN SIMB items RPAREN RPAREN'
-    print "Calling", p[2], "with", p[4]
-    print "Calling", p[7], "with", p[8]
+#def p_callMultiple(p):
+#    'calls : LPAREN LET LPAREN items RPAREN LPAREN SIMB items RPAREN RPAREN'
+#    print "Calling", p[2], "with", p[4]
+#    print "Calling", p[7], "with", p[8]
     #p[0] = p[2]
     #print p[0]
 
 def p_call(p):
-    'call : LPAREN SIMB items RPAREN'
-    if DEBUG: print "Calling", p[2], "with", p[3] 
-    p[0] = lisp_eval(p[2], p[3])
+    'call : LPAREN LET LPAREN items RPAREN call RPAREN'
+    global apl
+    global vars
+    if DEBUG: print "Calling", p[2], "with", p[4]
+    p[0] = lisp_eval(p[2], p[4])
+    p[0] = lisp_eval(apl[0], apl[1])
+    vars = {}
+    #p[0] = lisp_eval(p[6][2], p[6][3])
 
-def p_callLetOne(p):
+#def p_call01(p):
+#    'call : LPAREN LET LPAREN items RPAREN LPAREN SIMB items RPAREN RPAREN'
+#    if DEBUG: print "Calling", p[2], "with", p[4]
+#    if DEBUG: print "Calling", p[7], "with", p[8]
+#    p[0] = lisp_eval(p[2], p[4])
+#    p[0] = lisp_eval(p[7], p[8])
+
+def p_callOG(p):
+    'call : LPAREN SIMB items RPAREN'
+    global apl
+    if DEBUG: print "Calling", p[2], "with", p[3]
+    if (p[3][0] in vars):
+        p[0] = lisp_eval(p[2], p[3])
+    elif (isinstance(p[3][0], basestring) or isinstance(p[3][1], basestring)):
+        apl = [p[2], p[3]]
+        print apl
+    else:
+        p[0] = lisp_eval(p[2], p[3])
+
+#def p_callLetOne(p):
+#    'call : LPAREN LET LPAREN items RPAREN RPAREN'
+#    if DEBUG: print "Calling", p[2], "with", p[4]
+#    p[0] = lisp_eval(p[2], p[4])
+def p_callLetTwo(p):
     'call : LPAREN LET LPAREN items RPAREN RPAREN'
     if DEBUG: print "Calling", p[2], "with", p[4]
     p[0] = lisp_eval(p[2], p[4])
-def p_callLetTwo(p):
-    'call : LET LPAREN items RPAREN'
-    if DEBUG: print "Calling", p[1], "with", p[3]
-    p[0] = lisp_eval(p[1], p[3])
 
 
 
