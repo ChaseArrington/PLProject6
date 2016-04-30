@@ -25,6 +25,16 @@ def let(l):
     
 name['let'] = let
 
+def _if(l):
+    #print l[0]
+    if l[0] == True:
+        return l[1]
+    elif l[0] == False:
+        return l[2]
+    else:
+        return 'invalid'
+
+name['if'] = _if
 
 def concat(l):
     return l[0] + l[1]

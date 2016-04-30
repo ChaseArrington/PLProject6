@@ -8,7 +8,7 @@ import ply.lex as lex
 
 # List of token names.   
 tokens = ('QUOTE', 'SIMB', 'NUM', 'LPAREN', 'RPAREN', \
-'NIL', 'TRUE', 'FALSE', 'TEXT', 'LET')
+'NIL', 'TRUE', 'FALSE', 'TEXT', 'LET', 'if')
 
 # Reserved words
 reserved = {
